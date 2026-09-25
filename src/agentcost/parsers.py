@@ -6,6 +6,30 @@ from pathlib import Path
 from typing import List, Dict, Any, Optional
 
 from agentcost.cost import TokenUsage
+import logging
+import math
+
+logger = logging.getLogger(__name__)
+
+
+def _validate_token_count(value: Any, field_name: str) -> int:
+    """Validate and return a non-negative integer token count.
+
+    Returns 0 for invalid values (None, non-numeric, negative, non-finite).
+    Logs a warning when an invalid value is encountered.
+    """
+    if value is None:
+        return 0
+    if isinstance(value, bool) or not isinstance(value, (int, float)):
+        logger.warning("Invalid %s value: %r (non-numeric), using 0", field_name, value)
+        return 0
+    if not math.isfinite(value):
+        logger.warning("Invalid %s value: %r (non-finite), using 0", field_name, value)
+        return 0
+    if value < 0:
+        logger.warning("Invalid %s value: %r (negative), using 0", field_name, value)
+        return 0
+    return int(value)
 
 
 class ClaudeCodeParser:
@@ -55,10 +79,10 @@ class ClaudeCodeParser:
         
         return TokenUsage(
             model=model,
-            input_tokens=usage_data.get("input_tokens", 0),
-            output_tokens=usage_data.get("output_tokens", 0),
-            cache_read_tokens=usage_data.get("cache_read_input_tokens", 0),
-            cache_write_tokens=usage_data.get("cache_creation_input_tokens", 0) or usage_data.get("cache_write_tokens", 0),
+            input_tokens=_validate_token_count(usage_data.get("input_tokens"), "input_tokens"),
+            output_tokens=_validate_token_count(usage_data.get("output_tokens"), "output_tokens"),
+            cache_read_tokens=_validate_token_count(usage_data.get("cache_read_input_tokens"), "cache_read_input_tokens"),
+            cache_write_tokens=_validate_token_count(usage_data.get("cache_creation_input_tokens") or usage_data.get("cache_write_tokens"), "cache_write_tokens"),
             timestamp=timestamp,
             agent_id="claude-code",
             session_id=session_id,
@@ -124,10 +148,10 @@ class CodexParser:
         
         return TokenUsage(
             model=model,
-            input_tokens=usage_data.get("input_tokens", 0),
-            output_tokens=usage_data.get("output_tokens", 0),
-            cache_read_tokens=usage_data.get("cache_read_input_tokens", 0),
-            cache_write_tokens=usage_data.get("cache_creation_input_tokens", 0) or usage_data.get("cache_write_tokens", 0),
+            input_tokens=_validate_token_count(usage_data.get("input_tokens"), "input_tokens"),
+            output_tokens=_validate_token_count(usage_data.get("output_tokens"), "output_tokens"),
+            cache_read_tokens=_validate_token_count(usage_data.get("cache_read_input_tokens"), "cache_read_input_tokens"),
+            cache_write_tokens=_validate_token_count(usage_data.get("cache_creation_input_tokens") or usage_data.get("cache_write_tokens"), "cache_write_tokens"),
             timestamp=timestamp,
             agent_id="codex-cli",
             session_id=entry.get("session_id"),
@@ -172,10 +196,10 @@ class HermesParser:
         
         return TokenUsage(
             model=model,
-            input_tokens=usage_data.get("input_tokens", 0),
-            output_tokens=usage_data.get("output_tokens", 0),
-            cache_read_tokens=usage_data.get("cache_read_input_tokens", 0),
-            cache_write_tokens=usage_data.get("cache_creation_input_tokens", 0) or usage_data.get("cache_write_tokens", 0),
+            input_tokens=_validate_token_count(usage_data.get("input_tokens"), "input_tokens"),
+            output_tokens=_validate_token_count(usage_data.get("output_tokens"), "output_tokens"),
+            cache_read_tokens=_validate_token_count(usage_data.get("cache_read_input_tokens"), "cache_read_input_tokens"),
+            cache_write_tokens=_validate_token_count(usage_data.get("cache_creation_input_tokens") or usage_data.get("cache_write_tokens"), "cache_write_tokens"),
             timestamp=timestamp,
             agent_id="hermes-agent",
             session_id=entry.get("session_id"),
@@ -219,10 +243,10 @@ class OpenCodeParser:
         
         return TokenUsage(
             model=model,
-            input_tokens=usage_data.get("input_tokens", 0),
-            output_tokens=usage_data.get("output_tokens", 0),
-            cache_read_tokens=usage_data.get("cache_read_input_tokens", 0),
-            cache_write_tokens=usage_data.get("cache_creation_input_tokens", 0) or usage_data.get("cache_write_tokens", 0),
+            input_tokens=_validate_token_count(usage_data.get("input_tokens"), "input_tokens"),
+            output_tokens=_validate_token_count(usage_data.get("output_tokens"), "output_tokens"),
+            cache_read_tokens=_validate_token_count(usage_data.get("cache_read_input_tokens"), "cache_read_input_tokens"),
+            cache_write_tokens=_validate_token_count(usage_data.get("cache_creation_input_tokens") or usage_data.get("cache_write_tokens"), "cache_write_tokens"),
             timestamp=timestamp,
             agent_id="opencode-cli",
             session_id=entry.get("session_id"),
