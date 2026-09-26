@@ -32,6 +32,7 @@ Issues = "https://github.com/yunaremaia/agentcost/issues"
 
 [tool.setuptools.packages.find]
 where = ["src"]
+include = ["agentcost*"]
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]
