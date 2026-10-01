@@ -2,7 +2,7 @@
 
 [![CI](https://github.com/yunaremaia/agentcost/actions/workflows/ci.yml/badge.svg)](https://github.com/yunaremaia/agentcost/actions/workflows/ci.yml)
 [![Python](https://img.shields.io/badge/python-3.10%2B-blue.svg)](https://www.python.org/downloads/)
-[![License](https://img.shields.io/badge/license-MIT-green.svg)](https://github.com/yunaremaia/agentcost/blob/main/LICENSE)
+[![License](https://img.shields.io/badge/license-MIT-green.svg)](https://github.com/yunaremaia/agentcost/blob/main/LICENSE) [![Release](https://img.shields.io/github/v/release/yunaremaia/agentcost)](https://github.com/yunaremaia/agentcost/releases/latest) [![Stars](https://img.shields.io/github/stars/yunaremaia/agentcost)](https://github.com/yunaremaia/agentcost)
 
 **Token usage tracker for multi-agent AI sessions.**
 
@@ -174,6 +174,17 @@ Built-in pricing for Claude 3.x, GPT-4o, Gemini 1.5. Auto-fallback for unknown m
 
 Please report security vulnerabilities privately. See [SECURITY.md](SECURITY.md) for supported versions and reporting instructions.
 
+If this tool is useful to you, a star helps other people find it.
+
+## Related tools
+
+- **[driftcheck](https://github.com/yunaremaia/driftcheck)** — detect version drift between docs and toolchain files
+- **[taintrace](https://github.com/yunaremaia/taintrace)** — trace and inspect AI agent execution
+- **[depscan](https://github.com/yunaremaia/depscan)** — scan dependencies across multiple ecosystems
+- **[agent-guard](https://github.com/yunaremaia/agent-guard)** — enforce guardrails on AI agent tool calls
+
+Part of a family of focused, single-purpose developer tools — each one does one thing
+and does it well.
 ## License
 
 MIT
