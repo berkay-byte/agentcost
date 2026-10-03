@@ -118,6 +118,10 @@ a GitHub release is created (`.github/workflows/publish.yml`).
 
 Never commit API keys, tokens, or private agent logs. See [SECURITY.md](SECURITY.md).
 
+## Code of Conduct
+
+This project follows a [Code of Conduct](CODE_OF_CONDUCT.md). By participating, you agree to uphold it.
+
 ## Opening a pull request
 
 ```bash
