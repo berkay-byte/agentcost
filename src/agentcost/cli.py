@@ -10,7 +10,7 @@ from rich.console import Console
 from rich.table import Table
 from rich.panel import Panel
 
-from agentcost.cost import TokenUsage, CostBreakdown, calculate_cost, summarize_usage
+from agentcost.cost import TokenUsage, calculate_cost, summarize_usage
 from agentcost.parsers import ClaudeCodeParser, CodexParser, HermesParser, OpenCodeParser
 from agentcost.cursor_parser import CursorParser
 from agentcost.hermes_sqlite import HermesSQLiteParser
@@ -581,8 +581,7 @@ def init(project, quiet=False):
     """Initialize agentcost config with guided budget setup."""
     console.print("[bold]agentcost — Initialization[/bold]\n")
 
-    from rich.prompt import Prompt, FloatPrompt
-    from rich.text import Text
+    from rich.prompt import Prompt
 
     daily_str = Prompt.ask("Daily budget (USD)", default="10.00")
     weekly_str = Prompt.ask("Weekly budget (USD)", default="50.00")

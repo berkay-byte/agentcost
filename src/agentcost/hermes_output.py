@@ -10,8 +10,6 @@ import logging
 import re
 from datetime import datetime
 from pathlib import Path
-from typing import Iterator
-
 from agentcost.cost import TokenUsage
 
 
@@ -167,9 +165,10 @@ class HermesOutputParser:
         # Estimate total content tokens
         total_content_tokens = _estimate_tokens_from_text(content)
         
-        # Count tool calls
+        # Parse tool calls. The count itself is not part of TokenUsage and is
+        # never reported; only the per-call overhead and argument sizes below
+        # reach the returned token totals.
         tool_calls = _parse_tool_calls_from_output(content)
-        tool_call_count = len(tool_calls)
         
         # Estimate tool call prompt overhead
         tool_prompt_tokens = 0

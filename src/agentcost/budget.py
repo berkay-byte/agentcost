@@ -1,7 +1,6 @@
 """Budget management for agentcost."""
 from __future__ import annotations
 
-import os
 import math
 from pathlib import Path
 from typing import Optional

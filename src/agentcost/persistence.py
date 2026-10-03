@@ -6,7 +6,7 @@ from datetime import datetime
 from pathlib import Path
 from typing import Optional
 
-from agentcost.cost import TokenUsage, CostBreakdown
+from agentcost.cost import TokenUsage
 
 
 class CostPersistence:

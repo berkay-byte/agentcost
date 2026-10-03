@@ -1,0 +1,34 @@
+# Ruff configuration for agentcost.
+#
+# The lint gate is deliberately narrow: pyflakes (`F`) only. `F` catches the
+# class of defect no runtime test would -- a name used but never imported, a
+# binding assigned and then dropped, a redefinition that silently shadows an
+# earlier one. Before this gate the repo had no linter at all, which is how
+# `hermes_output.py` shipped with `tool_call_count = len(tool_calls)` that no
+# code path has ever read, since introduction in dbd93fa.
+#
+# `src/` and `tests/` are both in scope. Tests are where a quietly-dead binding
+# hides best: `tests/test_persistence.py` bound `persistence` only to prove the
+# constructor creates the database, and nothing in the suite noticed that the
+# object it built was then ignored.
+#
+# Style rules (E501, I001, UP, B) are intentionally NOT enabled: enabling them
+# means a large reformat that is hard to review, and a noisy first gate gets
+# disabled rather than fixed. Widen the selection deliberately, with the
+# reformat in its own commit.
+
+target-version = "py310"  # matches requires-python = ">=3.10" in pyproject.toml
+line-length = 100
+
+[lint]
+select = ["F"]
+
+[lint.per-file-ignores]
+# F401 (unused import) is exempted for tests only, because test modules
+# legitimately import names to assert they are importable, to patch a symbol,
+# or to prove a public surface exists. F811 (redefined name), F821 (undefined
+# name) and F841 (unused binding) are NOT exempted anywhere: those are the rules
+# that catch a test which shadows another, references something that does not
+# exist, or builds a value it never inspects -- the defect class this gate was
+# added for.
+"tests/*" = ["F401"]

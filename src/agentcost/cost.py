@@ -2,9 +2,7 @@
 
 from dataclasses import dataclass
 from datetime import datetime
-from typing import List, Dict, Optional
-from pathlib import Path
-import json
+from typing import List, Optional
 
 
 @dataclass

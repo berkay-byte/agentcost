@@ -57,9 +57,20 @@ COLUMNS=200 python -m pytest tests/ -q     # 170 passed
 
 ## Linting
 
-There is no linter or formatter configured. `pyproject.toml` defines no `[tool.ruff]`,
-`[tool.black]`, or equivalent, no linter is in the `dev` extra, and CI runs
-`pytest` only. Match the surrounding code style; a linter can be added in its own PR.
+CI runs `ruff check src tests` on every push and pull request. The rule
+selection lives in `ruff.toml` — not in this file and not in `pyproject.toml` —
+so widening it is a config change rather than a silent divergence between local
+runs and CI. Ruff is in the `dev` extra, so local and CI run the same version:
+
+```bash
+pip install -e .[dev]
+ruff check src tests
+```
+
+The selection is pyflakes (`F`) only: unused imports, unused bindings, shadowed
+names, undefined names. Style rules (`E501`, `I001`, `UP`, `B`) are deliberately
+not enabled yet — enabling them means a large reformat that is hard to review.
+Widen the selection on purpose, with the reformat in its own commit.
 
 ## Project layout
 

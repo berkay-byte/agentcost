@@ -24,7 +24,9 @@ dependencies = ["click>=8.1", "rich>=13.0"]
 agentcost = "agentcost.cli:cli"
 
 [project.optional-dependencies]
-dev = ["pytest>=7.0", "pytest-cov>=4.0"]
+# ruff backs the lint CI job, so it lives here rather than being installed ad
+# hoc in the workflow: local and CI then run the same version.
+dev = ["pytest>=7.0", "pytest-cov>=4.0", "ruff>=0.1"]
 
 [project.urls]
 Homepage = "https://github.com/yunaremaia/agentcost"

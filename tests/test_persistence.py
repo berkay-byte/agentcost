@@ -20,6 +20,9 @@ def persistence(db_path):
 
 def test_init_creates_tables(db_path):
     persistence = CostPersistence(db_path)
+    # Assert on the object, not just the path: the constructor is what creates
+    # the database, so it must also remember where it put it.
+    assert persistence.db_path == db_path
     assert db_path.exists()
 
     conn = sqlite3.connect(str(db_path))
