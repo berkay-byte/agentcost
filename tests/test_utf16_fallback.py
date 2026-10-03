@@ -36,3 +36,10 @@ def test_utf16_log_in_directory_scan_does_not_abort(tmp_path):
     (tmp_path / "codex-c.jsonl").write_text(LINE + "\n")
     usages = _parse_all_logs([tmp_path])
     assert len(usages) >= 2
+
+
+@pytest.mark.parametrize("encoding", ["utf-16-le", "utf-16-be"])
+def test_bomless_utf16_log_is_decoded(tmp_path, encoding):
+    path = tmp_path / "codex-session.jsonl"
+    path.write_bytes((LINE + "\n").encode(encoding))
+    assert len(_parse_file(path)) == 1
