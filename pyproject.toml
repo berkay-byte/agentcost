@@ -46,3 +46,9 @@ include = ["agentcost*"]
 [tool.pytest.ini_options]
 testpaths = ["tests"]
 python_files = ["test_*.py"]
+
+[tool.coverage.report]
+# Floor at the measured baseline (1042/1300 statements = 80.15%) rounded down,
+# so the gate blocks coverage from regressing without demanding a test avalanche
+# first. Raise it as real coverage grows, never below the number measured here.
+fail_under = 80
