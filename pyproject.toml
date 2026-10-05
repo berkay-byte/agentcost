@@ -48,7 +48,10 @@ testpaths = ["tests"]
 python_files = ["test_*.py"]
 
 [tool.coverage.report]
-# Floor at the measured baseline (1042/1300 statements = 80.15%) rounded down,
-# so the gate blocks coverage from regressing without demanding a test avalanche
-# first. Raise it as real coverage grows, never below the number measured here.
-fail_under = 80
+# Floor at the measured CI baseline: 1031/1326 statements = 77.75%, rounded
+# down. Measure this with an empty HOME -- cli.py and hermes_sqlite.py read a
+# live ~/.hermes/state.db, so on a dev box with Hermes installed the same suite
+# reports ~80% and the gate would not reflect what CI actually enforces.
+# hermes_sqlite.py is the biggest hole (38%) and is the first place to spend
+# new tests; raise this number as real coverage grows, never below the baseline.
+fail_under = 77
