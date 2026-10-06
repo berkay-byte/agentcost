@@ -38,3 +38,23 @@ def test_discover_help_lists_cursor(tmp_path):
     result = runner.invoke(cli, ["discover", "--help"])
     assert result.exit_code == 0
     assert "cursor" in result.output
+
+
+def test_discover_reports_unsupported_hermes_cron(tmp_path, monkeypatch):
+    cron = tmp_path / "job.json"
+    cron.write_text("{}")
+
+    class FakeDiscovery:
+        def __init__(self, *_args, **_kwargs):
+            pass
+
+        def discover(self):
+            return {"hermes_cron": [cron]}
+
+    monkeypatch.setattr("agentcost.cli.LogDiscovery", FakeDiscovery)
+    monkeypatch.setattr("agentcost.cli.HermesSQLiteParser.parse", lambda _self: [])
+
+    result = CliRunner().invoke(cli, ["discover"])
+
+    assert result.exit_code == 0
+    assert "Hermes cron output: skipped (unsupported format)" in result.output

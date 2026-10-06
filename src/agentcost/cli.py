@@ -72,6 +72,8 @@ def _parse_all_logs(
         discovery = LogDiscovery()
         logs = discovery.discover()
         for agent_type, paths in logs.items():
+            if agent_type == "hermes_cron":
+                continue
             if agent and agent_type != agent:
                 continue
             parser = _get_parser(agent_type)
@@ -282,15 +284,21 @@ def discover(log_paths, agent, quiet=False):
         discovery = LogDiscovery()
     
     logs = discovery.discover()
+    cron_paths = logs.pop("hermes_cron", [])
     
     if agent:
         logs = {k: v for k, v in logs.items() if agent in k.lower()}
+        if agent != "hermes":
+            cron_paths = []
     
     if quiet:
         for agent_type, paths in sorted(logs.items()):
             for p in paths:
                 click.echo(str(p))
         return
+
+    if cron_paths:
+        console.print("[yellow]Hermes cron output: skipped (unsupported format)[/yellow]")
 
     if db_usages:
         console.print(f"\n[bold green]Hermes SQLite database:[/bold green] {len(db_usages)} usage records")
