@@ -173,7 +173,7 @@ When Hermes adds a new tool, add its name and estimated token overhead to that d
 
 ## Model pricing
 
-Built-in pricing for Claude 3.x, GPT-4o, Gemini 1.5. Auto-fallback for unknown models.
+Built-in pricing for Claude, GPT, Gemini, DeepSeek, Grok, Qwen, Kimi, and Llama models. Free-tier LongCat, Omni, and Muse models are explicitly priced at $0; unknown models use fallback pricing.
 
 ## Security
 
