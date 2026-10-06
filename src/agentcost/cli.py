@@ -43,6 +43,17 @@ def _format_currency(n: float) -> str:
         return f"${n:,.2f}"
 
 
+def _period_start(now, period: str):
+    """Return the start of the current reporting period."""
+    from datetime import timedelta
+
+    if period == "daily":
+        return now.replace(hour=0, minute=0, second=0, microsecond=0)
+    if period == "weekly":
+        return now - timedelta(days=7)
+    return now.replace(day=1, hour=0, minute=0, second=0, microsecond=0)
+
+
 def _parse_all_logs(
     log_paths: Optional[List[Path]] = None,
     *,
@@ -634,7 +645,7 @@ def budget(action, daily, weekly, monthly, as_sarif, quiet=False):
         if "monthly" in config:
             console.print(f"  Monthly: ${config['monthly']:.2f}")
     elif action == "check":
-        from datetime import datetime, timedelta
+        from datetime import datetime
         config = load_budget_config()
         if not config:
             console.print("[yellow]No budget thresholds set. Run 'agentcost budget set' first.[/yellow]")
@@ -654,7 +665,7 @@ def budget(action, daily, weekly, monthly, as_sarif, quiet=False):
         actuals = {}
 
         if "daily" in config:
-            today_start = now.replace(hour=0, minute=0, second=0, microsecond=0)
+            today_start = _period_start(now, "daily")
             today_usages = [u for u in usages if u.timestamp and u.timestamp >= today_start]
             today_cost = sum(calculate_cost(u) for u in today_usages)
             actuals["daily"] = today_cost
@@ -662,7 +673,7 @@ def budget(action, daily, weekly, monthly, as_sarif, quiet=False):
                 exit_code = 1
 
         if "weekly" in config:
-            week_start = now - timedelta(days=7)
+            week_start = _period_start(now, "weekly")
             week_usages = [u for u in usages if u.timestamp and u.timestamp >= week_start]
             week_cost = sum(calculate_cost(u) for u in week_usages)
             actuals["weekly"] = week_cost
@@ -670,7 +681,7 @@ def budget(action, daily, weekly, monthly, as_sarif, quiet=False):
                 exit_code = 1
 
         if "monthly" in config:
-            month_start = now - timedelta(days=30)
+            month_start = _period_start(now, "monthly")
             month_usages = [u for u in usages if u.timestamp and u.timestamp >= month_start]
             month_cost = sum(calculate_cost(u) for u in month_usages)
             actuals["monthly"] = month_cost
@@ -773,7 +784,7 @@ def analyze(log_path, agent, period, date, output_format, quiet=False, strict=Fa
 @click.option("--quiet", "-q", is_flag=True, help="Quiet output (JSON format)")
 def compare(log_paths, period, output_format, quiet=False):
     """Compare costs across agents for a given period."""
-    from datetime import datetime, timedelta
+    from datetime import datetime
     
     log_paths = list(log_paths) if log_paths else None
     usages = _parse_all_logs(log_paths)
@@ -783,12 +794,7 @@ def compare(log_paths, period, output_format, quiet=False):
         return
     
     # Filter by period
-    if period == "daily":
-        cutoff = datetime.now().replace(hour=0, minute=0, second=0, microsecond=0)
-    elif period == "weekly":
-        cutoff = datetime.now() - timedelta(days=7)
-    else:  # monthly
-        cutoff = datetime.now() - timedelta(days=30)
+    cutoff = _period_start(datetime.now(), period)
     
     usages = [u for u in usages if u.timestamp and u.timestamp >= cutoff]
     
