@@ -294,6 +294,21 @@ class TestLogDiscovery:
         logs = discovery.discover()
         assert isinstance(logs, dict)
 
+    def test_discover_classifies_hermes_paths(self, tmp_path):
+        logs_dir = tmp_path / ".hermes" / "logs"
+        cron_dir = tmp_path / ".hermes" / "cron" / "output"
+        logs_dir.mkdir(parents=True)
+        cron_dir.mkdir(parents=True)
+        session = logs_dir / "session.jsonl"
+        cron = cron_dir / "job.json"
+        session.write_text("{}")
+        cron.write_text("{}")
+
+        logs = LogDiscovery([str(logs_dir), str(cron_dir)]).discover()
+
+        assert session in logs["hermes"]
+        assert cron in logs["hermes_cron"]
+
 
 class TestReportGenerator:
     """Generate cost reports."""
