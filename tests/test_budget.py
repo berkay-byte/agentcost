@@ -2,6 +2,7 @@
 from __future__ import annotations
 import click
 import pytest
+from datetime import datetime
 from pathlib import Path
 from unittest.mock import patch, MagicMock
 
@@ -11,7 +12,12 @@ from agentcost.budget import (
     CONFIG_FILE,
     PROJECT_CONFIG_NAME,
 )
-from agentcost.cli import cli
+from agentcost.cli import cli, _period_start
+
+
+def test_monthly_period_starts_on_first_day():
+    now = datetime(2026, 10, 6, 14, 30)
+    assert _period_start(now, "monthly") == datetime(2026, 10, 1)
 
 
 class TestBudgetConfig:
