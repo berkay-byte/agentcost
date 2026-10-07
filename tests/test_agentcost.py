@@ -6,7 +6,7 @@ from pathlib import Path
 import json
 import tempfile
 
-from agentcost.cost import TokenUsage, CostBreakdown, calculate_cost, summarize_usage, MODEL_PRICING
+from agentcost.cost import TokenUsage, CostBreakdown, calculate_cost, summarize_usage, MODEL_PRICING, is_free_model
 from agentcost.parsers import ClaudeCodeParser, CodexParser, HermesParser, OpenCodeParser
 from agentcost.discovery import LogDiscovery
 from agentcost.report import ReportGenerator
@@ -82,6 +82,19 @@ class TestCostCalculation:
         cost = calculate_cost(usage)
         expected = (10000 / 1e6 * 0.55) + (5000 / 1e6 * 2.19)
         assert abs(cost - expected) < 0.001
+
+    def test_free_models_have_zero_pricing(self):
+        for model in (
+            "meituan/longcat-2.0:free",
+            "longcat-2.0",
+            "longcat-2.0:free",
+            "omni-1",
+            "muse-spark-1.2-contributor",
+        ):
+            assert is_free_model(model)
+            assert calculate_cost(TokenUsage(model, 1_000_000, 1_000_000)) == 0.0
+
+        assert all(is_free_model(model) for model in MODEL_PRICING if ":free" in model)
 
     def test_summarize_usage(self):
         usages = [
