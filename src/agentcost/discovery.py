@@ -31,6 +31,7 @@ class LogDiscovery:
             "codex": [],
             "opencode": [],
             "hermes": [],
+            "hermes_cron": [],
             "cursor": [],
         }
         
@@ -38,15 +39,18 @@ class LogDiscovery:
             if not base_path.exists():
                 continue
             base_name = base_path.name.lower()
+            path_parts = {part.lower() for part in base_path.parts}
             
-            if "claude" in base_name:
+            if ".hermes" in path_parts and "cron" in path_parts:
+                logs["hermes_cron"].extend(self._find_logs(base_path))
+            elif ".hermes" in path_parts or "hermes" in base_name:
+                logs["hermes"].extend(self._find_logs(base_path))
+            elif "claude" in base_name:
                 logs["claude"].extend(self._find_jsonl(base_path))
             elif "codex" in base_name:
                 logs["codex"].extend(self._find_jsonl(base_path))
             elif "opencode" in base_name:
                 logs["opencode"].extend(self._find_jsonl(base_path))
-            elif "hermes" in base_name:
-                logs["hermes"].extend(self._find_logs(base_path))
             elif "cursor" in base_name:
                 logs["cursor"].extend(self._find_jsonl(base_path))
         

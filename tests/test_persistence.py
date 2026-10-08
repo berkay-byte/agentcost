@@ -100,9 +100,13 @@ def test_get_daily_summary(persistence):
 
 
 def test_empty_db_summary(db_path):
-    summary = CostPersistence(db_path).get_cost_summary()
-    assert summary["total_records"] == 0
-    assert summary["total_input_tokens"] == 0
+    persistence = CostPersistence(db_path)
+    empty = persistence.get_cost_summary()
+    persistence.record(TokenUsage(model="m1", input_tokens=100, output_tokens=50))
+    populated = persistence.get_cost_summary()
+
+    assert set(empty) == set(populated)
+    assert all(value == 0 for value in empty.values())
 
 
 def test_filter_by_session(persistence):

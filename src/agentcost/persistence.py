@@ -142,17 +142,8 @@ class CostPersistence:
         row = conn.execute(query, params).fetchone()
         conn.close()
 
-        if not row or row["total_records"] == 0:
-            return {
-                "total_records": 0,
-                "total_input_tokens": 0,
-                "total_output_tokens": 0,
-                "total_estimated_cost": 0.0,
-                "total_actual_cost": 0.0,
-            }
-
         return {
-            "total_records": row["total_records"],
+            "total_records": row["total_records"] or 0,
             "total_input_tokens": row["total_input"] or 0,
             "total_output_tokens": row["total_output"] or 0,
             "total_cache_read": row["total_cache_read"] or 0,
